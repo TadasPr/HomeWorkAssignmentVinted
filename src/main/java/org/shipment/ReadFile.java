@@ -34,7 +34,7 @@ public class ReadFile {
             fileScanner.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
-            e.printStackTrace();
+            e.getStackTrace();
         }
     }
 }
