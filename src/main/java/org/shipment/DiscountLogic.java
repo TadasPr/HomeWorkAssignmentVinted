@@ -12,10 +12,11 @@ public class DiscountLogic {
     protected static double monthLimitAccumulated = DiscountLimitConstant.MONTHLY_LIMIT_DISCOUNT;
 
     public static void discountCalculated(ShipmentConstructor shipment) {
+        boolean sameMonth = isMonthSame(shipment.date);
         originalCost = OriginalShipmentPrice.originalPrice(shipment.getShipmentProvider(), shipment.getPackedSize());
-        double discountProvided = discountForPacked(shipment);
+        double discountProvided = discountForPacked(shipment, sameMonth);
         if (discountProvided != -1.0) {
-            shipment.setShipmentPrice(afterDiscountPrice(discountProvided, isMonthSame(shipment.date)));
+            shipment.setShipmentPrice(afterDiscountPrice(discountProvided, sameMonth));
             shipment.setDiscountForShipment(actualDiscount);
         } else {
             shipment.setShipmentPrice(originalCost);
@@ -23,15 +24,14 @@ public class DiscountLogic {
         }
     }
 
-    private static double discountForPacked(ShipmentConstructor shipment) {
+    private static double discountForPacked(ShipmentConstructor shipment, boolean sameMonth) {
+        if (!sameMonth) {
+            lpLargeCounter = 0;
+        }
         if (shipment.getPackedSize().equals(PackedSize.LARGE_PACKED) && shipment.getShipmentProvider().equals(ShipmentProviders.LA_POSTE)) {
-            if (isMonthSame(shipment.getDate())) {
-                lpLargeCounter++;
-                if (lpLargeCounter == 3) {
-                    return ShipmentCost.LAPOSTE_LARGE;
-                }
-            } else {
-                lpLargeCounter = 0;
+            lpLargeCounter++;
+            if (lpLargeCounter == 3) {
+                return ShipmentCost.LAPOSTE_LARGE;
             }
         } else if (shipment.getPackedSize().equals(PackedSize.SMALL_PACKED)) {
             return originalCost - Math.min(ShipmentCost.MONDIALRELAY_SMALL, ShipmentCost.LAPOSTE_SMALL);
@@ -49,6 +49,7 @@ public class DiscountLogic {
             actualDiscount = originalCost - afterDiscountCost;
             return afterDiscountCost;
         }
+        actualDiscount = 0;
         return originalCost;
     }
 
