@@ -1,0 +1,9 @@
+packedSize,expectedResult
+L,true
+M,true
+S,true
+ ,false
+Small,false
+Large,false
+Medium,false
+Italy,false

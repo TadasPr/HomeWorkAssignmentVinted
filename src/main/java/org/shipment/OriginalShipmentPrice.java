@@ -1,26 +1,22 @@
 package org.shipment;
 
 public class OriginalShipmentPrice {
+    //Method is responsible to return shipping cost by packed size and shipping provider
+    //before any discount (original prise for shipping)
     public static double originalPrice(String shipmentProvider, String packedSize) {
-        if (packedSize.equals(PackedSize.SMALL_PACKED)) {
-            return switch (shipmentProvider) {
-                case ShipmentProviders.LA_POSTE -> ShipmentCost.LAPOSTE_SMALL;
-                case ShipmentProviders.MONDIAL_RELAY -> ShipmentCost.MONDIALRELAY_SMALL;
-                default -> -1.0;
+        return switch (PackedSize.valueOf(packedSize)) {
+            case S -> switch (ShipmentProvider.valueOf(shipmentProvider)) {
+                case LP -> ShipmentCost.LAPOSTE_SMALL;
+                case MR -> ShipmentCost.MONDIALRELAY_SMALL;
             };
-        } else if (packedSize.equals(PackedSize.MEDIUM_PACKED)) {
-            return switch (shipmentProvider) {
-                case ShipmentProviders.LA_POSTE -> ShipmentCost.LAPOSTE_MEDIUM;
-                case ShipmentProviders.MONDIAL_RELAY -> ShipmentCost.MONDIALRELAY_MEDIUM;
-                default -> -1.0;
+            case M -> switch (ShipmentProvider.valueOf(shipmentProvider)) {
+                case LP -> ShipmentCost.LAPOSTE_MEDIUM;
+                case MR -> ShipmentCost.MONDIALRELAY_MEDIUM;
             };
-        } else if (packedSize.equals(PackedSize.LARGE_PACKED)) {
-            return switch (shipmentProvider) {
-                case ShipmentProviders.LA_POSTE -> ShipmentCost.LAPOSTE_LARGE;
-                case ShipmentProviders.MONDIAL_RELAY -> ShipmentCost.MONDIALRELAY_LARGE;
-                default -> -1.0;
+            case L -> switch (ShipmentProvider.valueOf(shipmentProvider)) {
+                case LP -> ShipmentCost.LAPOSTE_LARGE;
+                case MR -> ShipmentCost.MONDIALRELAY_LARGE;
             };
-        }
-        return -1.0;
+        };
     }
 }

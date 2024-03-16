@@ -1,8 +1,21 @@
 package org.shipment;
 
-public class PackedSize {
-    protected static final String LARGE_PACKED = "L";
-    protected static final String MEDIUM_PACKED = "M";
-    protected static final String SMALL_PACKED = "S";
+public enum PackedSize {
+    L,
+    M,
+    S;
+
+    public static PackedSize findByName(String name) {
+        //Packed size name is checked if it's exist name will be provided
+        //otherwise null will be returned
+        PackedSize result = null;
+        for (PackedSize size : values()) {
+            if (size.name().equalsIgnoreCase(name)) {
+                result = size;
+                break;
+            }
+        }
+        return result;
+    }
 }
 

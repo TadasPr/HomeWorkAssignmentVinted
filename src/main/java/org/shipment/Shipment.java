@@ -1,13 +1,13 @@
 package org.shipment;
 
-public class ShipmentConstructor {
-    String date;
-    String packedSize;
-    String shipmentProvider;
-    double discountForShipment;
-    double shipmentPrice;
+public class Shipment {
+    private String date;
+    private String packedSize;
+    private String shipmentProvider;
+    private double discountForShipment;
+    private double shipmentPrice;
 
-    public ShipmentConstructor(String date, String packedSize, String shipmentProvider) {
+    public Shipment(String date, String packedSize, String shipmentProvider) {
         this.date = date;
         this.packedSize = packedSize;
         this.shipmentProvider = shipmentProvider;

@@ -4,48 +4,53 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DiscountLogic {
-    protected static int lpLargeCounter = 0;
-    protected static double originalCost;
-    protected static double actualDiscount;
-    protected static int startingYear = 0;
-    protected static int startingMonth = 0;
-    protected static double monthLimitAccumulated = DiscountLimitConstant.MONTHLY_LIMIT_DISCOUNT;
+    private static int lpLargeCounter = 0;
+    protected double originalCost;
+    private double actualDiscount;
+    private int startingYear = 0;
+    private int startingMonth = 0;
+    private double monthLimitAccumulated = 10;
 
-    public static void discountCalculated(ShipmentConstructor shipment) {
-        boolean sameMonth = isMonthSame(shipment.date);
-        originalCost = OriginalShipmentPrice.originalPrice(shipment.getShipmentProvider(), shipment.getPackedSize());
+    public void discountCalculated(Shipment shipment) {
+        boolean sameMonth = isMonthSame(shipment.getDate()); // storing value if same month
+        originalCost = OriginalShipmentPrice.originalPrice(shipment.getShipmentProvider(), shipment.getPackedSize()); // storing value what is original price for shipping
         double discountProvided = discountForPacked(shipment, sameMonth);
-        if (discountProvided != -1.0) {
+        if (discountProvided != -1) { //if discount was provided setting these values to use later for printing
             shipment.setShipmentPrice(afterDiscountPrice(discountProvided, sameMonth));
             shipment.setDiscountForShipment(actualDiscount);
-        } else {
+        } else { // if discount not provided setting original price for shipping and discount 0
             shipment.setShipmentPrice(originalCost);
-            shipment.setDiscountForShipment(0.0);
+            shipment.setDiscountForShipment(0);
         }
     }
 
-    private static double discountForPacked(ShipmentConstructor shipment, boolean sameMonth) {
+    private double discountForPacked(Shipment shipment, boolean sameMonth) {
         if (!sameMonth) {
-            lpLargeCounter = 0;
+            lpLargeCounter = 0; //Reset counter if new month
         }
-        if (shipment.getPackedSize().equals(PackedSize.LARGE_PACKED) && shipment.getShipmentProvider().equals(ShipmentProviders.LA_POSTE)) {
+        //Below rule to check if packed size is "L" and shipping provider is "LP", and how many times this repeated
+        // if it's third time this month it will provide free shipping
+        if (PackedSize.valueOf(shipment.getPackedSize()).equals(PackedSize.L) && ShipmentProvider.valueOf(shipment.getShipmentProvider()).equals(ShipmentProvider.LP)) {
             lpLargeCounter++;
             if (lpLargeCounter == 3) {
                 return ShipmentCost.LAPOSTE_LARGE;
             }
-        } else if (shipment.getPackedSize().equals(PackedSize.SMALL_PACKED)) {
+        } else if (PackedSize.valueOf(shipment.getPackedSize()).equals(PackedSize.S)) { //If it's small packed it will provide lowes price for shipping
             return originalCost - Math.min(ShipmentCost.MONDIALRELAY_SMALL, ShipmentCost.LAPOSTE_SMALL);
         }
-        return -1.0;
+        return -1;
     }
 
-    private static double afterDiscountPrice(double discountProvided, boolean sameMonth) {
+    private double afterDiscountPrice(double discountProvided, boolean sameMonth) {
         if (!sameMonth) {
-            monthLimitAccumulated = DiscountLimitConstant.MONTHLY_LIMIT_DISCOUNT;
+            monthLimitAccumulated = 10; //if month not same reset monthLimitAccumulated to 10
         }
         if (monthLimitAccumulated > 0) {
+            //checking if monthLimitAccumulated is greater than or equal to discount provided if yes - full discountProvided is used
+            //else if monthLimitAccumulated not enough - reducing cost what is left in monthLimitAccumulated
             double afterDiscountCost = (monthLimitAccumulated >= discountProvided) ? originalCost - discountProvided : originalCost - monthLimitAccumulated;
             monthLimitAccumulated = monthLimitAccumulated - (originalCost - afterDiscountCost);
+            //saving what actual discount was provided
             actualDiscount = originalCost - afterDiscountCost;
             return afterDiscountCost;
         }
@@ -53,7 +58,8 @@ public class DiscountLogic {
         return originalCost;
     }
 
-    private static boolean isMonthSame(String date) {
+    //Method isMonthSame() return boolean value if month is still same or not
+    private boolean isMonthSame(String date) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateFormat = LocalDate.parse(date, format);
         if (startingYear == 0 && startingMonth == 0) {

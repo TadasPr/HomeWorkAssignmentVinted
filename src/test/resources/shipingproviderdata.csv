@@ -1,0 +1,8 @@
+shippingProvider,expectedResult
+LP,true
+MR,true
+DPD,false
+OMNIVA,false
+Express,false
+AMAZON,false
+ ,false

@@ -2,7 +2,13 @@ plugins {
     id("java")
 }
 
-group = "org.example"
+tasks.withType<Jar>{
+    manifest{
+        attributes["Main-Class"] = "org.shipment.Main"
+    }
+}
+
+group = "org.shipment"
 version = "1.0-SNAPSHOT"
 
 repositories {
