@@ -5,7 +5,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DiscountLogic {
     private static int lpLargeCounter = 0;
-    protected double originalCost;
+    private double originalCost;
     private double actualDiscount;
     private int startingYear = 0;
     private int startingMonth = 0;
