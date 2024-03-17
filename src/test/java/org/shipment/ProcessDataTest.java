@@ -27,7 +27,7 @@ class ProcessDataTest {
     @ParameterizedTest
     @CsvFileSource(resources = "/dataignored.csv")
     void printIgnoredResult(String data, String expectedResult) {
-        ProcessData processData = new ProcessData();;
+        ProcessData processData = new ProcessData();
         assertEquals(expectedResult, processData.printIgnoredResult(data));
     }
 }

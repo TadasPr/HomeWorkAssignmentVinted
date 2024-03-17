@@ -3,9 +3,9 @@ package org.shipment;
 import java.math.BigDecimal;
 
 public class Shipment {
-    private String date;
-    private String packedSize;
-    private String shipmentProvider;
+    private final String date;
+    private final String packedSize;
+    private final String shipmentProvider;
     private BigDecimal discountForShipment;
     private BigDecimal shipmentPrice;
 
