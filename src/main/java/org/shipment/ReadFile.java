@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class ReadFile {
     //Method is responsible for reading data from input.txt file and storing it in StringBuilder data,
     // if file not fount try catch added for exception handling
-    public StringBuilder readFileData(String pathToFile) {
+    public StringBuilder readFileData(String pathToFile)  {
         StringBuilder data = new StringBuilder();
         try {
             File fileObj = new File(pathToFile);

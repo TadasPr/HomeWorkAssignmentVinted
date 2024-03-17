@@ -59,7 +59,7 @@ public class DiscountLogic {
     }
 
     //Method isMonthSame() return boolean value if month is still same or not
-    private boolean isMonthSame(String date) {
+    public boolean isMonthSame(String date) {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate dateFormat = LocalDate.parse(date, format);
         if (startingYear == 0 && startingMonth == 0) {
