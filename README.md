@@ -1,4 +1,5 @@
 **Description**
+
 Takes input.txt where data is stored about date, packed size and shipping provider.
 Code takes data and processes them to calculate discount for sent packageds
 Project is written in **java language (JDK 18)**, project build is done using **gradle (v.8.4)**
