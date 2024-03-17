@@ -2,7 +2,7 @@ Project is written in **java language (JDK 18)**, project build is done using **
 
 Special directory was created "inputdata" to store "input.txt" file.
 
-BigDecimal should be used for financical transaction but double instead was used because of project data simplicity
+BigDecimal should be used for financical transaction but double instead
 
 **To build project open terminal in project directory run commands:**
 
