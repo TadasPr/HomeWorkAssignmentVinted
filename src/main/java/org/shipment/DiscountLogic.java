@@ -7,8 +7,8 @@ public class DiscountLogic {
     private static int lpLargeCounter = 0;
     private double originalCost;
     private double actualDiscount;
-    private int startingYear = 0;
-    private int startingMonth = 0;
+    private static int startingYear = 0;
+    private static int startingMonth = 0;
     private static double monthLimitAccumulated = 10;
 
     public void discountCalculated(Shipment shipment) {
