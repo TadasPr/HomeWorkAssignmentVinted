@@ -4,6 +4,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProcessDataTest {
@@ -16,8 +18,8 @@ class ProcessDataTest {
     @CsvFileSource(resources = "/printresultdata.csv")
     void printResult(String data, String originalPrice, String discount, String expectedResult) {
         ProcessData processData = new ProcessData();
-        double originalPriceNumber = Double.parseDouble(originalPrice);
-        double discountNumber = Double.parseDouble(discount);
+        BigDecimal originalPriceNumber = BigDecimal.valueOf(Double.parseDouble(originalPrice));
+        BigDecimal discountNumber = BigDecimal.valueOf(Double.parseDouble(discount));
         String actualResult = processData.printResult(data,originalPriceNumber, discountNumber);
         assertEquals(expectedResult, actualResult);
     }

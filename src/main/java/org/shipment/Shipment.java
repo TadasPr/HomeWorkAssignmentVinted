@@ -1,18 +1,20 @@
 package org.shipment;
 
+import java.math.BigDecimal;
+
 public class Shipment {
     private String date;
     private String packedSize;
     private String shipmentProvider;
-    private double discountForShipment;
-    private double shipmentPrice;
+    private BigDecimal discountForShipment;
+    private BigDecimal shipmentPrice;
 
     public Shipment(String date, String packedSize, String shipmentProvider) {
         this.date = date;
         this.packedSize = packedSize;
         this.shipmentProvider = shipmentProvider;
-        this.shipmentPrice = 0.0;
-        this.discountForShipment = 0.0;
+        this.shipmentPrice = BigDecimal.ZERO;
+        this.discountForShipment = BigDecimal.ZERO;
     }
 
     public String getDate() {
@@ -27,19 +29,19 @@ public class Shipment {
         return shipmentProvider;
     }
 
-    public double getDiscountForShipment() {
+    public BigDecimal getDiscountForShipment() {
         return discountForShipment;
     }
 
-    public void setDiscountForShipment(double discountForShipment) {
+    public void setDiscountForShipment(BigDecimal discountForShipment) {
         this.discountForShipment = discountForShipment;
     }
 
-    public double getShipmentPrice() {
+    public BigDecimal getShipmentPrice() {
         return shipmentPrice;
     }
 
-    public void setShipmentPrice(double shipmentPrice) {
+    public void setShipmentPrice(BigDecimal shipmentPrice) {
         this.shipmentPrice = shipmentPrice;
     }
 }

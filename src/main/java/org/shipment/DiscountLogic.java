@@ -1,30 +1,32 @@
 package org.shipment;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class DiscountLogic {
     private static int lpLargeCounter = 0;
-    private double originalCost;
-    private double actualDiscount;
+    private BigDecimal originalCost;
+    private BigDecimal actualDiscount;
     private static int startingYear = 0;
     private static int startingMonth = 0;
-    private static double monthLimitAccumulated = 10;
+    private static BigDecimal monthLimitAccumulated = new BigDecimal(10);
 
     public void discountCalculated(Shipment shipment) {
         boolean sameMonth = isMonthSame(shipment.getDate()); // storing value if same month
         originalCost = OriginalShipmentPrice.originalPrice(shipment.getShipmentProvider(), shipment.getPackedSize()); // storing value what is original price for shipping
-        double discountProvided = discountForPacked(shipment, sameMonth);
-        if (discountProvided != -1) { //if discount was provided setting these values to use later for printing
+        BigDecimal discountProvided = discountForPacked(shipment, sameMonth);
+        if (discountProvided.compareTo(BigDecimal.valueOf(-1)) != 0) { //if discount was provided setting these values to use later for printing
             shipment.setShipmentPrice(afterDiscountPrice(discountProvided, sameMonth));
             shipment.setDiscountForShipment(actualDiscount);
         } else { // if discount not provided setting original price for shipping and discount 0
             shipment.setShipmentPrice(originalCost);
-            shipment.setDiscountForShipment(0);
+            shipment.setDiscountForShipment(BigDecimal.ZERO);
         }
     }
 
-    private double discountForPacked(Shipment shipment, boolean sameMonth) {
+    private BigDecimal discountForPacked(Shipment shipment, boolean sameMonth) {
+        ShipmentCost shipmentCost = new ShipmentCost();
         if (!sameMonth) {
             lpLargeCounter = 0; //Reset counter if new month
         }
@@ -33,28 +35,29 @@ public class DiscountLogic {
         if (PackedSize.valueOf(shipment.getPackedSize()).equals(PackedSize.L) && ShipmentProvider.valueOf(shipment.getShipmentProvider()).equals(ShipmentProvider.LP)) {
             lpLargeCounter++;
             if (lpLargeCounter == 3) {
-                return ShipmentCost.LAPOSTE_LARGE;
+                return shipmentCost.getLaPosteLargeCost();
             }
         } else if (PackedSize.valueOf(shipment.getPackedSize()).equals(PackedSize.S)) { //If it's small packed it will provide lowes price for shipping
-            return originalCost - Math.min(ShipmentCost.MONDIALRELAY_SMALL, ShipmentCost.LAPOSTE_SMALL);
+            return originalCost.subtract(shipmentCost.getLaPosteSmallCost().min(shipmentCost.getMondialRelaySmallCost()));
         }
-        return -1;
+        return BigDecimal.valueOf(-1);
     }
 
-    private double afterDiscountPrice(double discountProvided, boolean sameMonth) {
+    private BigDecimal afterDiscountPrice(BigDecimal discountProvided, boolean sameMonth) {
         if (!sameMonth) {
-            monthLimitAccumulated = 10; //if month not same reset monthLimitAccumulated to 10
+            monthLimitAccumulated = BigDecimal.valueOf(10); //if month not same reset monthLimitAccumulated to 10
         }
-        if (monthLimitAccumulated > 0) {
+        if (monthLimitAccumulated.compareTo(BigDecimal.ZERO) > 0) {
             //checking if monthLimitAccumulated is greater than or equal to discount provided if yes - full discountProvided is used
             //else if monthLimitAccumulated not enough - reducing cost what is left in monthLimitAccumulated
-            double afterDiscountCost = (monthLimitAccumulated >= discountProvided) ? originalCost - discountProvided : originalCost - monthLimitAccumulated;
-            monthLimitAccumulated = monthLimitAccumulated - (originalCost - afterDiscountCost);
+            BigDecimal afterDiscountCost = (monthLimitAccumulated.compareTo(discountProvided) >= 0) ? originalCost.subtract(discountProvided) : originalCost.subtract(monthLimitAccumulated);
+            BigDecimal discountApplied = originalCost.subtract(afterDiscountCost);
+            monthLimitAccumulated = monthLimitAccumulated.subtract(discountApplied);
             //saving what actual discount was provided
-            actualDiscount = originalCost - afterDiscountCost;
+            actualDiscount = originalCost.subtract(afterDiscountCost);
             return afterDiscountCost;
         }
-        actualDiscount = 0;
+        actualDiscount = BigDecimal.ZERO;
         return originalCost;
     }
 

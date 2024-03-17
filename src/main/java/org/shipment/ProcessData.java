@@ -1,5 +1,6 @@
 package org.shipment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -25,11 +26,11 @@ public class ProcessData {
         }
     }
 
-    public String printResult(String data, double shipmentPrice, double discountForShipment) {
+    public String printResult(String data, BigDecimal shipmentPrice, BigDecimal discountForShipment) {
         //returns string format for data print, also check if discountForShipment was provided or not
         // if not provided instead of number 0 printing it will print symbol "-"
         return String.format("%s %.2f %s", data, shipmentPrice,
-                discountForShipment == 0 ? "-" : String.format("%.2f", discountForShipment));
+                discountForShipment.compareTo(BigDecimal.ZERO) == 0 ? "-" : String.format("%.2f", discountForShipment));
     }
 
     public String printIgnoredResult(String data) {
